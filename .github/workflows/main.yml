@@ -1,4 +1,4 @@
-name: Weekly Dev to Stage PR
+name: Weekly Dev to Stage PR New
 
 on:
  workflow_dispatch: 
