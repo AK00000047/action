@@ -1,11 +1,12 @@
-name: Weekly Merge from Develop to Stage
+name: Weekly Dev to Stage PR
 
 on:
- schedule:
-    - cron: '0 12 * * MON' # This runs the workflow every Monday at 12:00 PM UT
+  schedule:
+    # Runs at 00:00 every Sunday
+    - cron: '*/2 * * * *'
 
 jobs:
- create-pull-request:
+  create_pull_request:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -14,16 +15,12 @@ jobs:
           ref: develop
 
       - name: Create Pull Request
-        uses: actions/github-script@v6
+        uses: repo-sync/pull-request@v2
         with:
-          script: |
-            const { repo, owner } = context.repo;
-            const result = await github.rest.pulls.create({
-              title: 'Weekly merge from develop to stage',
-              owner,
-              repo,
-              head: 'develop',
-              base: 'stage',
-              body: 'This PR is auto-generated to merge changes from develop to stage.',
-              requested_reviewers: ['cyz@gmail.com', 'xyz@gmail.com']
-            });
+          source_branch: "develop"
+          destination_branch: "stage"
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          pr_title: "Weekly merge from Develop to Stage"
+          pr_body: "This is an automated pull request to update the stage branch with the latest code from develop."
+          pr_reviewer: "amit992833@gmail.com,amit9928336594@gmail.com" # Reviewers' GitHub usernames
+          pr_label: "automated-pr"
